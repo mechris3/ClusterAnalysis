@@ -1,7 +1,16 @@
 function Cluster()
 {
+	var dispatch = d3.dispatch("initialised","centroidFound","centroidMoved");
+	var parent = this;
+	dispatch.on("initialised",function(){parent.findNearestCentroid()});
+	dispatch.on("centroidFound",function(){parent.moveCentroid()});
+	dispatch.on("centroidMoved",function(){parent.findNearestCentroid()});
+	
+	
+	
 	var w=1400, h=800;
 	var data = [];		
+	var colors = ["yellow","blue","green","gray"]
 	var centroids = [];
 	var numberOfPoints=2000;
 	var padding=30;
@@ -10,7 +19,7 @@ function Cluster()
 	// this initialises with random but biased data. If the coordinate is less than half the width/height it is reduced, otherwise increase it
 	// this will tend to group the data into four clusters
 	//this.initialiseData();
-	this.initialiseData = new Function()
+	this.initialiseData = function()
 		{
 			for (i=0;i<numberOfPoints;i++)
 			{
@@ -18,9 +27,9 @@ function Cluster()
 				var y=Math.random()*100;
 				//if (x<50) { x = x * 0.9 } else {x = x *1.1}
 				//if (y<50) { y = y * 0.9 } else {y = y *1.1}
-				data.push({"x":x,"y":y,"name":"point"+i,"color":"black","centroid":""})
+				data.push({"x":x,"y":y,"name":"point"+i,"color":"white","centroid":""})
 			}
-			var colors = ["yellow","blue","green","gray"]
+			
 			for (i=0;i<4;i++)
 			{
 				var x=Math.random()*100;
@@ -28,7 +37,8 @@ function Cluster()
 				centroids.push({"x":x,"y":y,"name":"centroid"+i,"color":colors[i],"centroid":""})
 			}
 		};
-	
+	this.initialiseData()
+	//this.initialisePage =  functio
 	
 				
 	var widthScale = d3.scale.linear().domain([0,100*1.0]).range([padding,w-padding]);
@@ -70,6 +80,8 @@ function Cluster()
 			.duration(3000)	
 			.attr("cx", function(d) { return widthScale(d.x)})
 			.attr("cy", function(d) { return heightScale(d.y)})						
+		
+		setTimeout(function(d) { dispatch.initialised();},3000)
 									
 				
 		canvas.append("g")
@@ -82,6 +94,7 @@ function Cluster()
 			.attr("class","axis")
 			.call(yAxis)					
 
+		
 
 		this.findNearestCentroid = function()
 			{
@@ -113,6 +126,8 @@ function Cluster()
 							return d.color
 						})
 					.attr("title",function(d) {return d.centroid+" ("+parseInt(d.x)+","+parseInt(d.y)+") Distance:"+d.distance})
+					setTimeout(function(d) { dispatch.centroidFound();},2500)
+				
 			}
 		
 		this.moveCentroid = function()
@@ -138,11 +153,13 @@ function Cluster()
 		
 			
 		centroidsPoints.transition()
-			.delay(500)
+			.delay(0)
 			.duration(2000)							
 			.attr("cx", function(d) { return widthScale(d.x)})
 			.attr("cy", function(d) { return heightScale(d.y)})		
 			.attr("title",function(d) {return d.name+"("+parseInt(d.x)+","+parseInt(d.y)+")"})	
+			
+			setTimeout(function(d) { dispatch.centroidMoved();},2000)
 	}
 			
 						
