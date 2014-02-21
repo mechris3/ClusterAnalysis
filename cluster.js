@@ -1,12 +1,12 @@
 function Cluster()
 {
-	var w=800, h=600;
+	var w=1400, h=800;
 	var data = [];		
 	var centroids = [];
-	var numberOfPoints=2500;
+	var numberOfPoints=2000;
 	var padding=30;
-	var centroidRadius=10;
-	var coordinateRadius=4;
+	var centroidRadius=21;
+	var coordinateRadius=7;
 	// this initialises with random but biased data. If the coordinate is less than half the width/height it is reduced, otherwise increase it
 	// this will tend to group the data into four clusters
 	//this.initialiseData();
@@ -16,8 +16,8 @@ function Cluster()
 			{
 				var x=Math.random()*100;
 				var y=Math.random()*100;
-				if (x<50) { x = x * 0.9 } else {x = x *1.1}
-				if (y<50) { y = y * 0.9 } else {y = y *1.1}
+				//if (x<50) { x = x * 0.9 } else {x = x *1.1}
+				//if (y<50) { y = y * 0.9 } else {y = y *1.1}
 				data.push({"x":x,"y":y,"name":"point"+i,"color":"black","centroid":""})
 			}
 			var colors = ["yellow","blue","green","gray"]
@@ -31,13 +31,13 @@ function Cluster()
 	
 	
 				
-	var widthScale = d3.scale.linear().domain([0,100*1.1]).range([padding,w-padding]);
-	var heightScale = d3.scale.linear().domain([0,100*1.1]).range([h-padding,padding])				
+	var widthScale = d3.scale.linear().domain([0,100*1.0]).range([padding,w-padding]);
+	var heightScale = d3.scale.linear().domain([0,100*1.0]).range([h-padding,padding])				
 				
 	var xAxis = d3.svg.axis().scale(widthScale)				
 	var yAxis = d3.svg.axis().scale(heightScale).orient("left")					
 									
-	var canvas = d3.select("body").append("svg").attr("width",w).attr("height",h).style("background-color","#DDD")
+	var canvas = d3.select("body").append("svg").attr("width",w).attr("height",h).style("background-color","#FFF")
 												
 	var coordinates = canvas.selectAll("circle.coordinate").data(data)
 			.enter()
@@ -51,7 +51,7 @@ function Cluster()
 				.attr("title",function(d) {return parseInt(d.x)+","+parseInt(d.y)})
 
 	coordinates.transition()
-				.duration(1000)
+				.duration(3000)
 				.attr("cx", function(d) { return widthScale(d.x)})
 				.attr("cy", function(d) { return heightScale(d.y)})						
 						
@@ -67,7 +67,7 @@ function Cluster()
 			.attr("title",function(d) {return d.name+"("+parseInt(d.x)+","+parseInt(d.y)+")"})		
 
 		centroidsPoints.transition()
-			.duration(1500)	
+			.duration(3000)	
 			.attr("cx", function(d) { return widthScale(d.x)})
 			.attr("cy", function(d) { return heightScale(d.y)})						
 									
@@ -102,7 +102,7 @@ function Cluster()
 					data[i].centroid=centroidName			
 				}
 								
-				coordinates.transition().delay(0).duration(1500)
+				coordinates.transition().delay(0).duration(2500)
 					.attr("fill",function (d)
 						{
 							if (d.centroid=="centroid0") {d.color=colors[0]}
@@ -138,10 +138,11 @@ function Cluster()
 		
 			
 		centroidsPoints.transition()
-			.delay(1000)
-			.duration(1500)							
+			.delay(500)
+			.duration(2000)							
 			.attr("cx", function(d) { return widthScale(d.x)})
 			.attr("cy", function(d) { return heightScale(d.y)})		
+			.attr("title",function(d) {return d.name+"("+parseInt(d.x)+","+parseInt(d.y)+")"})	
 	}
 			
 						
