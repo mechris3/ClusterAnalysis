@@ -12,15 +12,23 @@ function Cluster()
 	var data = [];		
 	var colors = ["yellow","blue","green","gray"]
 	var centroids = [];
-	var numberOfPoints=2000;
+	var numberOfPoints=5000;
 	var padding=30;
 	var centroidRadius=21;
 	var coordinateRadius=7;
 	// this initialises with random but biased data. If the coordinate is less than half the width/height it is reduced, otherwise increase it
 	// this will tend to group the data into four clusters
-	//this.initialiseData();
+	
 	this.initialiseData = function()
-		{
+		{		
+			
+			var centres = [];
+			
+			centres[0]=[Math.random()*100,Math.random()*100];
+			centres[1]=[Math.random()*100,Math.random()*100];
+			centres[2]=[Math.random()*100,Math.random()*100];
+			centres[3]=[Math.random()*100,Math.random()*100];
+			console.log(centres)
 			for (i=0;i<numberOfPoints;i++)
 			{
 				var x=Math.random()*100;
@@ -37,9 +45,7 @@ function Cluster()
 				centroids.push({"x":x,"y":y,"name":"centroid"+i,"color":colors[i],"centroid":""})
 			}
 		};
-	this.initialiseData()
-	//this.initialisePage =  functio
-	
+	this.initialiseData()	
 				
 	var widthScale = d3.scale.linear().domain([0,100*1.0]).range([padding,w-padding]);
 	var heightScale = d3.scale.linear().domain([0,100*1.0]).range([h-padding,padding])				
@@ -81,8 +87,7 @@ function Cluster()
 			.attr("cx", function(d) { return widthScale(d.x)})
 			.attr("cy", function(d) { return heightScale(d.y)})						
 		
-		setTimeout(function(d) { dispatch.initialised();},3000)
-									
+		setTimeout(function(d) { dispatch.initialised();},3000)									
 				
 		canvas.append("g")
 			.attr("transform",function(){return "translate(0,"+(h-padding)+")"})
@@ -93,9 +98,7 @@ function Cluster()
 			.attr("transform",function(){return "translate("+padding+",00)"})
 			.attr("class","axis")
 			.call(yAxis)					
-
 		
-
 		this.findNearestCentroid = function()
 			{
 				for (var i=0;i<data.length;i++)				
